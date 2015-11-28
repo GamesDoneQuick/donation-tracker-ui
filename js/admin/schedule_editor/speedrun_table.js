@@ -1,7 +1,7 @@
 import React from 'react';
 const { PropTypes } = React;
 
-import Speedrun from './speedrun.js';
+import Speedrun from './speedrun';
 import EmptyTableDropTarget from './drag_drop/empty_table_drop_target';
 import ErrorList from 'ui/public/error_list';
 
@@ -21,7 +21,7 @@ function orderSort(a, b) {
 
 class Header extends React.Component {
     render() {
-        const { title } = this.props;
+        const { title, reorderable } = this.props;
         return (
             <thead>
                 <tr>
@@ -29,7 +29,7 @@ class Header extends React.Component {
                 </tr>
                 <tr>
                     <th>Start Time</th>
-                    <th>Order</th>
+                    <th>{reorderable ? 'Order' : null}</th>
                     <th>Game</th>
                     <th>Runners</th>
                     <th>Console</th>
@@ -64,9 +64,9 @@ class SpeedrunTable extends React.Component {
         // this is hard as hell to understand and kinda slow so uh maybe clean it up a bit
         return (
             <table className="table table-striped table-condensed small">
-                <Header title={event ? event.name : 'All Events'} />
+                <Header title={event ? event.name : 'All Events'} reorderable={!!moveSpeedrun} />
                 <tbody>
-                    {speedruns[0] && speedruns[0].order === null ?
+                    {speedruns[0] && speedruns[0].order === null && !!moveSpeedrun ?
                         <EmptyTableDropTarget
                             elementType='tr'
                             moveSpeedrun={(pk) => saveField(speedruns.find((sr) => sr.pk === pk), 'order', 1)}

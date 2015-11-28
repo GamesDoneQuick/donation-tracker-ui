@@ -53,7 +53,7 @@ function loadModels(model, params, additive) {
                 const func = additive ? onModelCollectionAdd : onModelCollectionReplace;
                 dispatch(func(model,
                     models.reduce((o, v) => {
-                        if (v.model.toLowerCase() === `tracker.${model}`.toLowerCase()) {
+                        if (v.model.toLowerCase() === `${APP_NAME}.${model}`.toLowerCase()) {
                             v.fields.pk = v.pk;
                             o.push(v.fields);
                         }
@@ -133,7 +133,7 @@ function saveDraftModels(models) {
                 done((savedModels) => {
                     dispatch(onModelCollectionAdd(m.type,
                         savedModels.reduce((o, v) => {
-                            if (v.model.toLowerCase() === `tracker.${m.type}`.toLowerCase()) {
+                            if (v.model.toLowerCase() === `${APP_NAME}.${m.type}`.toLowerCase()) {
                                 v.fields.pk = v.pk;
                                 o.push(v.fields);
                             } else {
@@ -167,7 +167,7 @@ function saveField(model, field, value) {
                 done((savedModels) => {
                     dispatch(onModelCollectionAdd(model.type,
                         savedModels.reduce((o, v) => {
-                            if (v.model.toLowerCase() === `tracker.${model.type}`.toLowerCase()) {
+                            if (v.model.toLowerCase() === `${APP_NAME}.${model.type}`.toLowerCase()) {
                                 v.fields.pk = v.pk;
                                 o.push(v.fields);
                             } else {
@@ -200,7 +200,7 @@ function command(command) {
             const type = m.model.split('.')[1];
             dispatch(onModelCollectionAdd(type,
                 models.reduce((o, v) => {
-                    if (v.model.toLowerCase() === `tracker.${type}`.toLowerCase()) {
+                    if (v.model.toLowerCase() === `${APP_NAME}.${type}`.toLowerCase()) {
                         v.fields.pk = v.pk;
                         o.push(v.fields);
                     } else {

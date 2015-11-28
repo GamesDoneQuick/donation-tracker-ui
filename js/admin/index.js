@@ -7,7 +7,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 
 import App from './app';
 import ScheduleEditor from './schedule_editor';
-import ajaxSetup from '../public/ajaxsetup';
+import ajaxSetup from 'ui/public/ajaxsetup';
 import DevTools from '../devtools';
 
 if (__DEVTOOLS__) {

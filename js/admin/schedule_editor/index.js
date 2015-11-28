@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 
-import { actions } from '../../public/api';
-import Spinner from '../../public/spinner';
-import SpeedrunTable from './speedrun_table';
+import { actions } from 'ui/public/api';
+import Spinner from 'ui/public/spinner';
+import SpeedrunTable from './speedrun_table'
+import authHelper from 'ui/public/api/helpers/auth';
 
 const { PropTypes } = React;
 
@@ -21,24 +22,23 @@ class ScheduleEditor extends React.Component {
     }
 
     render() {
-        const { speedruns, events, drafts, status, moveSpeedrun, } = this.props;
-        const { event } = this.props.params;
+        const { speedruns, event, drafts, status, moveSpeedrun, editable } = this.props;
         const { saveField, saveModel_, editModel_, cancelEdit_, newSpeedrun_, updateField_, } = this;
-        const loading = status.speedrun === 'loading' || status.event === 'loading';
+        const loading = (status.speedrun === 'loading' || status.event === 'loading' || status.me === 'loading');
         return (
             <Spinner spinning={loading}>
                 {(status.speedrun === 'success' ?
                     <SpeedrunTable
-                        event={event ? _.findWhere(events, {pk: parseInt(event)}) : null}
+                        event={event}
                         drafts={drafts}
                         speedruns={speedruns}
-                        saveModel={saveModel_}
-                        editModel={editModel_}
-                        cancelEdit={cancelEdit_}
-                        newSpeedrun={newSpeedrun_}
-                        moveSpeedrun={moveSpeedrun}
-                        saveField={saveField}
-                        updateField={updateField_} />
+                        saveModel={editable && saveModel_}
+                        editModel={editable && editModel_}
+                        cancelEdit={editable && cancelEdit_}
+                        newSpeedrun={editable && newSpeedrun_}
+                        moveSpeedrun={editable && moveSpeedrun}
+                        saveField={editable && saveField}
+                        updateField={editable && updateField_} />
                     : null)}
             </Spinner>
         );
@@ -88,14 +88,21 @@ class ScheduleEditor extends React.Component {
     }
 }
 
-function select(state) {
-    const { models, drafts, status } = state;
-    const { event, speedrun } = models;
+ScheduleEditor.childContextTypes = {
+    editable: PropTypes.bool.isRequired,
+};
+
+function select(state, props) {
+    const { models, drafts, status, singletons } = state;
+    const { speedrun } = models;
+    const event = _.findWhere(models.event, {pk: parseInt(props.params.event)}) || null;
+    const { me } = singletons;
     return {
-        events: event,
+        event,
         speedruns: speedrun,
         status,
         drafts: drafts.speedrun || {},
+        editable: authHelper.hasPermission(me, `${APP_NAME}.change_speedrun`) && (!(event && event.locked) || authHelper.hasPermission(me, `${APP_NAME}.can_edit_locked_events`)),
     };
 }
 

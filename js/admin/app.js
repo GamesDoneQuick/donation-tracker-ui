@@ -43,6 +43,7 @@ class App extends Component {
         const {
             loadModels,
             status,
+            fetchMe,
         } = this.props;
         setTimeout(
             () => {
@@ -51,6 +52,7 @@ class App extends Component {
                 }
             },
             1);
+        fetchMe();
     }
 }
 
@@ -59,18 +61,22 @@ App.childContextTypes = {
 };
 
 function select(state) {
-    const { saving, status, dropdowns } = state;
+    const { saving, status, dropdowns, singletons } = state;
     const { event } = state.models;
     return {
         events: event,
         saving,
         status,
         dropdowns,
+        singletons,
     };
 }
 
 function dispatch(dispatch) {
     return {
+        fetchMe: () => {
+            dispatch(actions.singletons.fetchMe());
+        },
         loadModels: (model, params, additive) => {
             dispatch(actions.models.loadModels(model, params, additive));
         },

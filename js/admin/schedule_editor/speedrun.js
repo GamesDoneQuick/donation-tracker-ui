@@ -14,16 +14,53 @@ import SpeedrunDropTarget from './drag_drop/speedrun_drop_target';
 class Speedrun extends React.Component {
     constructor(props) {
         super(props);
-        this.nullOrder_ = this.nullOrder_.bind(this);
-        this.editModel_ = this.editModel_.bind(this);
-        this.cancelEdit_ = this.cancelEdit_.bind(this);
-        this.updateField_ = this.updateField_.bind(this);
+        const {
+            saveField,
+            editModel,
+            cancelEdit,
+            saveModel,
+            updateField,
+        } = this.props;
+        this.nullOrder_ = saveField && this.nullOrder_.bind(this);
+        this.editModel_ = editModel && this.editModel_.bind(this);
+        this.cancelEdit_ = cancelEdit && this.cancelEdit_.bind(this);
+        this.updateField_ = updateField && this.updateField_.bind(this);
+        this.save_ = saveModel && this.save_.bind(this);
         this.legalMove_ = this.legalMove_.bind(this);
-        this.save_ = this.save_.bind(this);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props);
+    }
+
+    orderTarget() {
+        const {
+            speedrun,
+            moveSpeedrun,
+            connectDragSource,
+        } = this.props;
+        const {
+            legalMove_,
+            nullOrder_,
+        } = this;
+        return (
+            <td style={{textAlign: 'center'}}>
+                {moveSpeedrun ?
+                    <OrderTarget
+                        spinning={(speedrun._internal && (speedrun._internal.moving || speedrun._internal.saving)) || false}
+                        connectDragSource={connectDragSource}
+                        nullOrder={nullOrder_}
+                        target={!!speedrun.order}
+                        targetType={SpeedrunDropTarget}
+                        targetProps={{
+                            pk: speedrun.pk,
+                            legalMove: legalMove_,
+                            moveSpeedrun: moveSpeedrun,
+                        }}
+                        />
+                : null}
+            </td>
+        );
     }
 
     line() {
@@ -39,7 +76,7 @@ class Speedrun extends React.Component {
             updateField_,
             save_,
         } = this;
-        return draft ?
+        return (draft && updateField_) ?
             [
             <td key='name'>
                 {connectDragPreview(<div><FormField name='name' value={draft.name} modify={updateField_} /></div>)}
@@ -100,7 +137,9 @@ class Speedrun extends React.Component {
                 <input name='commentators' value={speedrun.commentators} readOnly={true} />
             </td>,
             <td key='buttons'>
-                <button type='button' value='Edit' onClick={editModel_}>Edit</button>
+                {editModel_ ?
+                    <button type='button' value='Edit' onClick={editModel_}>Edit</button>
+                    : null}
             </td>
             ];
     }
@@ -109,32 +148,13 @@ class Speedrun extends React.Component {
         const {
             speedrun,
             isDragging,
-            moveSpeedrun,
-            connectDragSource,
         } = this.props;
-        const {
-            legalMove_,
-            nullOrder_,
-        } = this;
         return (
             <tr style={{opacity: isDragging ? 0.5 : 1}}>
                 <td className='small'>
                     {(speedrun && speedrun.order !== null && speedrun.starttime !== null) ? moment(speedrun.starttime).format("dddd, MMMM Do, h:mm a") : 'Unscheduled' }
                 </td>
-                <td style={{textAlign: 'center'}}>
-                    <OrderTarget
-                        spinning={(speedrun._internal && (speedrun._internal.moving || speedrun._internal.saving)) || false}
-                        connectDragSource={connectDragSource}
-                        nullOrder={nullOrder_}
-                        target={!!speedrun.order}
-                        targetType={SpeedrunDropTarget}
-                        targetProps={{
-                            pk: speedrun.pk,
-                            legalMove: legalMove_,
-                            moveSpeedrun: moveSpeedrun,
-                        }}
-                        />
-                </td>
+                {this.orderTarget()}
                 {this.line()}
             </tr>
         );
@@ -197,9 +217,9 @@ Speedrun.propTypes = {
     draft: SpeedrunShape,
     moveSpeedrun: PropTypes.func,
     saveField: PropTypes.func,
-    saveModel: PropTypes.func.isRequired,
-    cancelEdit: PropTypes.func.isRequired,
-    editModel: PropTypes.func.isRequired,
+    saveModel: PropTypes.func,
+    cancelEdit: PropTypes.func,
+    editModel: PropTypes.func,
 };
 
 const speedrunSource = {
