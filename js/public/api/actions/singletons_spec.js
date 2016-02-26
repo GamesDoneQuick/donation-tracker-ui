@@ -49,7 +49,7 @@ describe('singletons actions', () => {
                 });
             });
 
-            describe('when the call succeeds', () => {
+            describe('when the call fails', () => {
                 beforeEach(() => {
                     d.reject();
                 });

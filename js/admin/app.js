@@ -15,13 +15,13 @@ class App extends Component {
             <div style={{position: 'relative'}}>
                 <Link to={window.ROOT_PATH + "schedule_editor"}>Schedule Editor</Link>
                 <Spinner spinning={status.event === 'loading'}>
-                    <Dropdown open={dropdowns.app_events} toggle={toggleDropdown.bind(null, 'app_events')}>
+                    <Dropdown>
                         <div style={{border: '1px solid', position: 'absolute', backgroundColor: 'white', minWidth: '200px', maxHeight: '120px', overflowY: 'auto' }}>
                             <ul style={{display: 'block'}}>
                                 {events ? events.map((e) => {
                                     return (
                                         <li key={e.pk}>
-                                            <Link to={window.ROOT_PATH + 'schedule_editor/:event'} onClick={toggleDropdown.bind(null, 'app_events')} params={{event: e.pk}}>{e.short}</Link>
+                                            <Link to={window.ROOT_PATH + 'schedule_editor/:event'} params={{event: e.pk}}>{e.short}</Link>
                                         </li>
                                     );
                                 })

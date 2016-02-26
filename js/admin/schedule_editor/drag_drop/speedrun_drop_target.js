@@ -1,18 +1,25 @@
 import React from 'react';
 const { PropTypes } = React;
 import { DropTarget } from 'react-dnd';
+import cn from 'classnames';
+
+import sharedStyles from './shared.css';
+import styles from './speedrun_drop_target.css';
 
 class SpeedrunDropTarget extends React.Component {
     render() {
         const { before, isOver, canDrop, connectDropTarget } = this.props;
+        const { STATIC_URL } = this.context;
+        const classes = [
+            {
+                [sharedStyles.droppable]: isOver && canDrop,
+            },
+            styles[before ? 'before' : 'after'],
+            styles.default,
+        ];
         return connectDropTarget(
-            <span
-                style={{
-                    width: '50%',
-                    backgroundColor: isOver && canDrop ? 'green' : 'inherit',
-                    float: before ? 'left' : 'right'
-                }}>
-                <img src={STATIC_URL + (before ? 'prev.png' : 'next.png')} />
+            <span className={cn(classes)}>
+                <img src={this.context.STATIC_URL + (before ? 'prev.png' : 'next.png')} />
             </span>
         );
     }
@@ -21,6 +28,10 @@ class SpeedrunDropTarget extends React.Component {
 SpeedrunDropTarget.propTypes = {
     before: PropTypes.bool.isRequired,
     pk: PropTypes.number.isRequired,
+};
+
+SpeedrunDropTarget.contextTypes = {
+    STATIC_URL: PropTypes.string.isRequired,
 };
 
 const speedrunTarget = {

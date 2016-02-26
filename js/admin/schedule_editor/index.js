@@ -2,10 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import dateFormat from 'dateformat';
+import Sprinklr from 'sprinklr';
+import { createSelector } from 'reselect';
+import Immutable from 'immutable';
 
 import { actions } from '../../public/api';
 import Spinner from '../../public/spinner';
-import SpeedrunTable from './speedrun_table'
+import SpeedrunTable from './speedrun_table';
 
 const { PropTypes } = React;
 
@@ -22,15 +25,14 @@ class ScheduleEditor extends React.Component {
     }
 
     render() {
-        const { speedruns, events, drafts, status, moveSpeedrun, } = this.props;
-        const { event } = this.props.params;
+        const { event, speedruns, drafts, status, moveSpeedrun, } = this.props;
         const { saveField, saveModel_, editModel_, cancelEdit_, newSpeedrun_, updateField_, } = this;
         const loading = status.speedrun === 'loading' || status.event === 'loading';
         return (
             <Spinner spinning={loading}>
                 {(status.speedrun === 'success' ?
                     <SpeedrunTable
-                        event={event ? _.findWhere(events, {pk: parseInt(event)}) : null}
+                        event={event}
                         drafts={drafts}
                         speedruns={speedruns}
                         saveModel={saveModel_}
@@ -89,11 +91,28 @@ class ScheduleEditor extends React.Component {
     }
 }
 
-function select(state) {
+const eventSelector = createSelector(
+    [
+        state => state,
+        createSelector(
+            (_, event_id) => event_id,
+            event_id => Sprinklr.models.createModelSelectorCreator('event', [], [], [], ['name'])(12)
+        )
+    ],
+    (state, eventSelector) => {
+        const event = eventSelector(Immutable.fromJS(state));
+        console.log(state.event[12]);
+        return event && event.toJS();
+    }
+);
+
+
+function select(state, ownProps) {
     const { models, drafts, status } = state;
-    const { event, speedrun } = models;
+    const { speedrun } = models;
+    const event = eventSelector(state.models, ownProps.params.event);
     return {
-        events: event,
+        event: event,
         speedruns: speedrun,
         status,
         drafts: drafts.speedrun || {},

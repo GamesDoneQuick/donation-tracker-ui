@@ -1,7 +1,7 @@
 import Spinner from './spinner';
 import React from 'react';
-import addons from 'react/addons';
-const { TestUtils } = React.addons;
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-addons-test-utils';
 
 describe('Spinner', () => {
     let subject;
@@ -20,7 +20,7 @@ describe('Spinner', () => {
         });
 
         it('uses the imageFile', () => {
-            expect(TestUtils.findRenderedDOMComponentWithTag(subject, 'img').getDOMNode().getAttribute('src')).toEqual('//localhost/static/foo.png');
+            expect(TestUtils.findRenderedDOMComponentWithTag(subject, 'img').getAttribute('src')).toEqual('//localhost/static/foo.png');
         });
 
         it('does not render children', () => {

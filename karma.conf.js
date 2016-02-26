@@ -1,26 +1,32 @@
 module.exports = function(config) {
     config.set({
+        autoWatch: true,
+
         browsers: ['PhantomJS'],
 
-        frameworks: ['jasmine-ajax', 'jasmine'],
+        frameworks: ['jasmine'],
 
         files: [
             './node_modules/phantomjs-polyfill/bind-polyfill.js',
-            'static/**/*_spec.js'
+            'js/**/*_spec.js'
         ],
 
         preprocessors: {
             // add webpack as preprocessor
-            'static/**/*_spec.js': ['webpack']
+            'js/**/*_spec.js': ['webpack']
         },
 
         webpack: {
             module: {
                 loaders: [
                     {
-                        test: /\.jsx?$/,
+                        test: /\.js$/,
                         exclude: /(node_modules|bower_components)/,
                         loader: 'babel-loader',
+                    },
+                    {
+                        test: /\.css$/,
+                        loader: 'style!css-loader?sourceMap!postcss-loader',
                     },
                 ],
             },
@@ -38,9 +44,7 @@ module.exports = function(config) {
         plugins: [
             require('karma-webpack'),
             require('karma-jasmine'),
-            require('karma-jasmine-ajax'),
             require('karma-phantomjs-launcher'),
         ]
-
     });
 };

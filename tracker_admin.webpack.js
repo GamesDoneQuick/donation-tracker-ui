@@ -3,16 +3,25 @@ var webpack = require('webpack');
 var build = require('webpack-build');
 var autoprefixer = require('autoprefixer-core');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var packageJSON = require('./package.json');
+
+function keyMirror(obj) {
+    return Object.keys(obj).reduce(function(memo, key) {
+        memo[key] = key;
+        return memo;
+    }, {});
+}
 
 module.exports = function(opts) {
 	console.log(JSON.stringify(opts));
 	var config = {
 		context: __dirname,
-		entry: './static/donation_tracker/admin',
+		entry: './src/js/admin',
 		output: {
 			'filename': 'admin-[name]-[hash].js',
 			'pathinfo': opts.context.DEBUG,
 		},
+	    externals: keyMirror(packageJSON.dependencies),
 		module: {
 			loaders: [
 				{

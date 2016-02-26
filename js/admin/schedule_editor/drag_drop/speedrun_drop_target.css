@@ -1,0 +1,11 @@
+:local(.default) {
+    width: 50%;
+}
+
+:local(.before) {
+    float: left;
+}
+
+:local(.after) {
+    float: right;
+}

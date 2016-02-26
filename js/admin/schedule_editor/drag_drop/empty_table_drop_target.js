@@ -1,17 +1,17 @@
 import React from 'react';
 const { PropTypes } = React;
 import { DropTarget } from 'react-dnd';
+import cn from 'classnames';
+
+import styles from './shared.css';
 
 class EmptyTableDropTarget extends React.Component {
     render() {
         const { isOver, canDrop, connectDropTarget } = this.props;
         const ElementType = this.props.elementType; // needs to be uppercase or the compiler will think it's an html tag
+        const classes = {[styles.droppable]: isOver && canDrop};
         return connectDropTarget(
-            <ElementType
-                style={{
-                    backgroundColor: isOver && canDrop ? 'green' : 'inherit',
-                }}
-                >
+            <ElementType className={cn(classes)}>
                 {this.props.children}
             </ElementType>
         );

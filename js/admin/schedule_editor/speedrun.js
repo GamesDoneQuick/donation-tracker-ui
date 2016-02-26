@@ -10,6 +10,9 @@ import ErrorList from '../../public/error_list';
 
 import SpeedrunDropTarget from './drag_drop/speedrun_drop_target';
 
+const dateFormat = dateFormat || (() => 'what');
+const STATIC_URL = STATIC_URL || '//localhost/';
+
 class Speedrun extends React.Component {
     constructor(props) {
         super(props);

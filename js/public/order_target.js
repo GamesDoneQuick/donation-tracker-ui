@@ -3,6 +3,8 @@ const { PropTypes } = React;
 
 import Spinner from './spinner';
 
+const STATIC_URL = STATIC_URL || '//localhost/foo';
+
 class OrderTarget extends React.Component {
     render() {
         const {

@@ -8,7 +8,7 @@ module.exports = function(opts) {
 	console.log(JSON.stringify(opts));
 	var config = {
 		context: __dirname,
-		entry: './static/donation_tracker',
+		entry: './src/js',
 		output: {
 			'filename': 'public-[name]-[hash].js',
 			'pathinfo': opts.context.DEBUG,

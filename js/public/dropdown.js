@@ -6,13 +6,19 @@ export default class Dropdown extends React.Component {
         this.toggle = this.toggle.bind(this);
     }
 
+    getInitialState() {
+        return {
+            open: false,
+        };
+    }
+
     render() {
         return (
             <span style={{position: 'relative'}}>
-                <img src={STATIC_URL + (this.props.open ? this.props.openFile : this.props.closedFile)}
+                <img src={STATIC_URL + (this.state.open ? this.props.openFile : this.props.closedFile)}
                     onClick={this.toggle} />
             { this.props.open ?
-                (<div>
+                (<div onClick={this.toggle}>
                     { this.props.children }
                 </div>)
                 :
@@ -23,16 +29,11 @@ export default class Dropdown extends React.Component {
     }
 
     toggle() {
-        this.props.toggle();
+        this.setState({open: !this.state.open});
     }
 }
-
-Dropdown.propTypes = {
-    toggle: React.PropTypes.func.isRequired,
-};
 
 Dropdown.defaultProps = {
     closedFile: 'next.png',
     openFile: 'dsc.png',
-    open: false,
 };
