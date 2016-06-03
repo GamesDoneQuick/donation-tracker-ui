@@ -11,7 +11,9 @@ module.exports = function(opts) {
         entry: ['./js/init', './js/admin'],
         output: {
             'filename': 'admin-[name]-[hash].js',
-            'pathinfo': opts.context.DEBUG,
+            'pathinfo': true,
+            'path': __dirname + '/static/gen',
+            'publicPath': __dirname + '/static/gen',
         },
         externals: sharedConfig(opts).externals,
         module: sharedConfig(opts).module,
@@ -19,6 +21,10 @@ module.exports = function(opts) {
         plugins: [
             new webpack.optimize.OccurrenceOrderPlugin(),
             new webpack.NoErrorsPlugin(),
+            new WebpackManifestPlugin({
+              manifestPath: __dirname + '/ui-admin.manifest.json',
+              outputRoot: __dirname + '/static'
+            }),
             new webpack.DefinePlugin({
                 'process.env': {
                     NODE_ENV: JSON.stringify(
@@ -40,7 +46,7 @@ module.exports = function(opts) {
     if (!opts.context.DEBUG) {
         // Remove duplicates and activate compression
         config.plugins.push(
-            //new webpack.optimize.DedupePlugin(),
+            new webpack.optimize.DedupePlugin(),
             new webpack.optimize.UglifyJsPlugin({comments: false})
         );
     }
