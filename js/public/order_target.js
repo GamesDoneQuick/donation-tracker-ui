@@ -1,9 +1,7 @@
 import React from 'react';
 const { PropTypes } = React;
 
-import Spinner from './spinner';
-
-const STATIC_URL = STATIC_URL || '//localhost/foo';
+import styles from './order_target.css';
 
 class OrderTarget extends React.Component {
     render() {
@@ -12,46 +10,44 @@ class OrderTarget extends React.Component {
             targetProps,
             connectDragSource,
             nullOrder,
-            spinning,
         } = this.props;
         const TargetType = this.props.targetType; // needs to be uppercase or the compiler will think it's an html tag
-        return (
-            <Spinner spinning={spinning}>
-                {connectDragSource(
-                    <span style={{cursor: 'move'}}>
-                    { target ?
-                        [
-                        <TargetType
-                            key='before'
-                            before={true}
-                            {...targetProps}/>,
-                        <TargetType
-                            key='after'
-                            before={false}
-                            {...targetProps}/>,
-                        nullOrder ?
-                            <img
-                                key='null'
-                                src={STATIC_URL + 'admin/img/icon_deletelink.gif'}
-                                onClick={nullOrder} />
-                            :
-                            null
-                        ]
-                        :
-                        <img src={STATIC_URL + 'asc.png'} />
-                    }
-                    </span>
-                )}
-            </Spinner>
+        return connectDragSource(
+            <span style={{cursor: 'move'}}>
+            { target ?
+                [
+                <TargetType
+                    key='before'
+                    before={true}
+                    {...targetProps}
+                />,
+                <TargetType
+                    key='after'
+                    before={false}
+                    {...targetProps}
+                />,
+                nullOrder ?
+                    <div
+                        key='null'
+                        className={styles.nullOrder}
+                        onClick={nullOrder}
+                    /> :
+                    null,
+                ]
+                :
+                <div className={styles.nontargetDrag} />
+            }
+            </span>
         );
     }
 }
 
 OrderTarget.propTypes = {
     target: PropTypes.bool.isRequired,
+    targetProps: PropTypes.object.isRequired,
     targetType: PropTypes.func.isRequired,
     connectDragSource: PropTypes.func.isRequired,
-    spinning: PropTypes.bool.isRequired,
+    nullOrder: PropTypes.func,
 };
 
 export default OrderTarget;

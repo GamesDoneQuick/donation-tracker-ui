@@ -18,4 +18,8 @@ ErrorList.defaultProps = {
     errors: [],
 };
 
+ErrorList.propTypes = {
+    errors: React.PropTypes.array.isRequired,
+};
+
 export default ErrorList;

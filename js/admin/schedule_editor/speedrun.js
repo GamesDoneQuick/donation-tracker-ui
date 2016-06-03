@@ -152,18 +152,22 @@ class Speedrun extends React.Component {
                     {(speedrun && speedrun.order !== null && speedrun.starttime !== null) ? dateFormat(Date.parse(speedrun.starttime)) : 'Unscheduled' }
                 </td>
                 <td style={{textAlign: 'center'}}>
-                    <OrderTarget
+                    <Spinner
                         spinning={(speedrun._internal && (speedrun._internal.moving || speedrun._internal.saving)) || false}
-                        connectDragSource={connectDragSource}
-                        nullOrder={saveField.bind(null, 'order', null)}
-                        target={!!speedrun.order}
-                        targetType={SpeedrunDropTarget}
-                        targetProps={{
-                            pk: speedrun.pk,
-                            legalMove: legalMove_,
-                            moveSpeedrun: moveSpeedrun,
-                        }}
-                        />
+                        >
+                        <OrderTarget
+
+                            connectDragSource={connectDragSource}
+                            nullOrder={saveField.bind(null, 'order', null)}
+                            target={!!speedrun.order}
+                            targetType={SpeedrunDropTarget}
+                            targetProps={{
+                                pk: speedrun.pk,
+                                legalMove: legalMove_,
+                                moveSpeedrun: moveSpeedrun,
+                            }}
+                            />
+                    </Spinner>
                 </td>
                 {this.line()}
             </tr>

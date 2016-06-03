@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactRouter, { Route, HistoryLocation } from 'react-router';
+import ReactDOM from 'react-dom';
+import { Router, Route, browserHistory } from 'react-router';
 import $ from 'jquery';
 import { Provider } from 'react-redux';
 import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
@@ -14,26 +15,23 @@ if (__DEVTOOLS__) {
 
 $(window).load(() => {
     ajaxSetup($);
-    ReactRouter.run(
-        <Route handler={App} path={window.ROOT_PATH}>
-            <Route name="schedule_editor" handler={ScheduleEditor}>
-                <Route path=":event" handler={ScheduleEditor}/>
-            </Route>
-        </Route>,
-        HistoryLocation,
-        (Handler, routerState) => {
-            React.render(
-                <span>
-                    <Provider store={App.store}>
-                        {() => <Handler routerState={routerState} />}
-                    </Provider>
-                    { __DEVTOOLS__ && false ?
-                        <DebugPanel top right bottom>
-                            <DevTools store={App.store} monitor={LogMonitor} />
-                        </DebugPanel>
-                    : null}
-                </span>
-                ,
-                document.getElementById("container"));
-        });
+
+    ReactDOM.render(
+        <Provider store={App.store}>
+            <span>
+                <Router history={browserHistory}>
+                    <Route component={App} path={window.ROOT_PATH}>
+                        <Route name="schedule_editor" component={ScheduleEditor}>
+                            <Route path=":event" component={ScheduleEditor}/>
+                        </Route>
+                    </Route>
+                </Router>
+                { __DEVTOOLS__ && false ?
+                    <DebugPanel top right bottom>
+                        <DevTools store={App.store} monitor={LogMonitor} />
+                    </DebugPanel>
+                : null}
+            </span>
+        </Provider>,
+    document.getElementById("container"));
 });

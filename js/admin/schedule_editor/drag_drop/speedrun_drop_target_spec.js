@@ -1,22 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
-import { DragSource, DragDropContext } from 'react-dnd';
-import DnDBackend from 'react-dnd-test-backend';
+import { DragSource } from 'react-dnd';
+
+import { DnDWrapper } from 'ui/test/context';
 
 import SpeedrunDropTarget from './speedrun_drop_target.js';
 import sharedStyles from './shared.css';
 import styles from './speedrun_drop_target.css';
-
-function wrapInTestContext(DecoratedComponent) {
-  return DragDropContext(DnDBackend)(
-    React.createClass({
-      render: function () {
-        return <DecoratedComponent {...this.props} />;
-      }
-    })
-  );
-}
 
 function makeSource(type, props = {}, endDrag = () => {}) {
     return DragSource(type, { beginDrag: () => props, endDrag: endDrag}, function collect(connect, monitor) {
@@ -30,21 +21,7 @@ function makeSource(type, props = {}, endDrag = () => {}) {
 
 const Original = SpeedrunDropTarget.DecoratedComponent;
 
-const Wrapper = wrapInTestContext(React.createClass({
-    getChildContext: () => ({
-        STATIC_URL: '//localhost/static/',
-    }),
-
-    childContextTypes: {
-        STATIC_URL: React.PropTypes.string,
-    },
-
-    render: function() {
-        return <div>{this.props.children}</div>;
-    }
-}));
-
-fdescribe('SpeedrunTableDropTarget', () => {
+describe('SpeedrunTableDropTarget', () => {
     let subject;
     let backend;
     let moveSpeedrun;
@@ -79,7 +56,7 @@ fdescribe('SpeedrunTableDropTarget', () => {
 
     describe('dnd component', () => {
         describe('when legalMove returns false', () => {
-            fit('dragging a Speedrun over does not set canDrop', () => {
+            it('dragging a Speedrun over does not set canDrop', () => {
                 const Source = makeSource('Speedrun');
                 subject = renderWithDragContext(Source);
                 const source = TestUtils.findRenderedComponentWithType(subject, Source);
@@ -97,7 +74,7 @@ fdescribe('SpeedrunTableDropTarget', () => {
                 legalMove.and.returnValue(true);
             });
 
-            fit('dragging a Speedrun over when legalMove returns true sets canDrop', () => {
+            it('dragging a Speedrun over sets canDrop', () => {
                 const Source = makeSource('Speedrun');
                 subject = renderWithDragContext(Source, {}, {legalMove: () => true});
                 const source = TestUtils.findRenderedComponentWithType(subject, Source);
@@ -109,7 +86,7 @@ fdescribe('SpeedrunTableDropTarget', () => {
                 backend.simulateEndDrag();
             });
 
-            fit('dropping a Speedrun when legalMove is true calls moveSpeedrun', () => {
+            it('dropping a Speedrun calls moveSpeedrun', () => {
                 const sourceProps = {pk: 4};
                 const targetProps = {pk: 1, before: true};
                 const Source = makeSource('Speedrun', sourceProps, (props, monitor) => {
@@ -129,7 +106,7 @@ fdescribe('SpeedrunTableDropTarget', () => {
             });
         });
 
-        fit('dragging anything else over does not call legalMove', () => {
+        it('dragging anything else over does not call legalMove', () => {
             const Source = makeSource('NotASpeedrun');
             const legalMove = jasmine.createSpy('legalMove');
             subject = renderWithDragContext(Source, {}, {legalMove});
@@ -153,14 +130,14 @@ fdescribe('SpeedrunTableDropTarget', () => {
             before: false,
         };
         return TestUtils.renderIntoDocument(
-            <Wrapper>
+            <DnDWrapper>
                 <Original
                     {...defaultProps}
                     {...props}
                 >
                     {children}
                 </Original>
-            </Wrapper>
+            </DnDWrapper>
         );
     }
 
@@ -172,13 +149,13 @@ fdescribe('SpeedrunTableDropTarget', () => {
             before: false,
         };
         const ret = TestUtils.renderIntoDocument(
-            <Wrapper>
+            <DnDWrapper>
                 <Source {...sourceProps} />
                 <SpeedrunDropTarget
                     {...defaultProps}
                     {...targetProps}
                 />
-            </Wrapper>
+            </DnDWrapper>
         );
         backend = ret.getManager().getBackend();
         return ret;

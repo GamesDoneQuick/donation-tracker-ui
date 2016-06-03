@@ -1,3 +1,5 @@
+var sharedConfig = require('./shared.webpack')({context: {DEBUG: true}});
+
 module.exports = function(config) {
     config.set({
         autoWatch: true,
@@ -8,31 +10,19 @@ module.exports = function(config) {
 
         files: [
             './node_modules/phantomjs-polyfill/bind-polyfill.js',
-            'js/**/*_spec.js'
+            'js/init/index.js',
+            'js/**/*_spec.js',
         ],
 
         preprocessors: {
-            // add webpack as preprocessor
-            'js/**/*_spec.js': ['webpack']
+            'js/init/*.js': ['webpack'],
+            'js/**/*_spec.js': ['webpack'],
         },
 
         webpack: {
-            module: {
-                loaders: [
-                    {
-                        test: /\.js$/,
-                        exclude: /(node_modules|bower_components)/,
-                        loader: 'babel-loader',
-                    },
-                    {
-                        test: /\.css$/,
-                        loader: 'style!css-loader?sourceMap!postcss-loader',
-                    },
-                ],
-            },
-            node: {
-                 fs: "empty"
-            },
+            module: sharedConfig.module,
+            node: sharedConfig.node,
+            resolve: sharedConfig.resolve,
         },
 
         webpackMiddleware: {
@@ -45,6 +35,6 @@ module.exports = function(config) {
             require('karma-webpack'),
             require('karma-jasmine'),
             require('karma-phantomjs-launcher'),
-        ]
+        ],
     });
 };

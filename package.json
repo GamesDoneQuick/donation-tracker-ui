@@ -8,7 +8,18 @@
   },
   "author": "",
   "license": "ISC",
+  "babel": {
+    "presets": [
+      "es2015",
+      "react",
+      "stage-2"
+    ],
+    "plugins": [
+      "transform-runtime"
+    ]
+  },
   "dependencies": {
+    "autobind-decorator": "^1.3.3",
     "bootstrap": "^3.3.5",
     "classnames": "^2.2.1",
     "dateformat": "^1.0.11",
@@ -18,6 +29,8 @@
     "jquery.cookie": "^1.4.1",
     "react": "^0.14.6",
     "react-dnd": "^2.0.0",
+    "react-dnd-html5-backend": "^2.1.2",
+    "react-dom": "^0.14.6",
     "react-redux": "^2.0.0",
     "react-router": "^2.0.0",
     "redux": "^2.0.0",
@@ -28,9 +41,16 @@
   },
   "devDependencies": {
     "autoprefixer-core": "^5.2.1",
-    "babel-core": "^5.6.15",
+    "babel-cli": "^6.5.1",
+    "babel-core": "^6.5.2",
     "babel-es6-polyfill": "^1.0.1",
-    "babel-loader": "^5.3.1",
+    "babel-loader": "^6.2.3",
+    "babel-plugin-transform-runtime": "^6.5.2",
+    "babel-polyfill": "^6.5.0",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-2": "^6.5.0",
+    "babel-runtime": "^6.9.2",
     "css-loader": "^0.15.1",
     "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
@@ -46,9 +66,7 @@
     "phantomjs-polyfill": "0.0.1",
     "postcss-loader": "^0.5.1",
     "react-addons-test-utils": "^0.14.7",
-    "react-dnd": "^2.1.2",
     "react-dnd-test-backend": "^1.0.2",
-    "react-dom": "^0.14.7",
     "react-hot-loader": "^1.2.7",
     "redux-devtools": "^2.1.5",
     "style-loader": "^0.12.3",

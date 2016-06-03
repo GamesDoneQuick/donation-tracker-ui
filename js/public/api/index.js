@@ -1,16 +1,22 @@
-import actions from './actions';
-import { status, drafts, models, dropdowns } from './reducers';
 import { compose, combineReducers, createStore, applyMiddleware } from 'redux';
 import { devTools, persistState } from 'redux-devtools';
 import thunk from 'redux-thunk';
 import _ from 'underscore';
 
-const reducers = combineReducers({
-    status,
-    drafts,
-    models,
-    dropdowns,
-});
+import actions from './actions';
+import reducers from './reducers';
+import freeze from 'ui/public/util/freeze';
+
+const combined = combineReducers(reducers);
+
+function freezeReducer(state = {}, action) {
+    const newState = combined(state, action);
+    if (newState !== state) {
+        return freeze(newState);
+    } else {
+        return state;
+    }
+}
 
 const store = (__DEVTOOLS__ ?
     compose(
@@ -20,7 +26,7 @@ const store = (__DEVTOOLS__ ?
     )
     :
     applyMiddleware(thunk)
-)(createStore)(reducers);
+)(createStore)(freezeReducer);
 
 module.exports = {
     actions,

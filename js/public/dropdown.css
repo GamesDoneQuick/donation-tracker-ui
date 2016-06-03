@@ -1,0 +1,12 @@
+:local(.closed) {
+    background-image: url(/static/next.png);
+}
+
+:local(.open) {
+    background-image: url(/static/dsc.png);
+}
+
+:local(.default) {
+    height: 12px;
+    width: 12px;
+}

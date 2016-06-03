@@ -1,26 +1,68 @@
 import _ from 'underscore';
 
 function modelNewDraft(state, action) {
-    const m = action.model;
-    const type = m.type;
-    let newState = {};
-    let models = newState[type] = _.extend({}, state[type] || {});
-    let keys = [0, ..._.map(Object.keys(models), pk => parseInt(pk))]; // are you kidding me with this
-    let pk = m.pk ? m.pk : (_.min(keys) - 1);
-    models[pk] = _.extend({ pk: pk }, models[pk] || {}, _.omit(action.model, (v, k) => k === 'type' || k.startsWith('_')));
-    return _.extend({}, state, newState);
+    const {
+        _cpk = 0,
+    } = state;
+
+    const cpk = _cpk + 1;
+
+    const {
+        type,
+        fields,
+        pk,
+    } = action.model;
+
+    const newState = {
+        [type]: {
+            ...state[type],
+            [cpk]: {
+                ...Object.keys(fields).reduce((memo, key) => {
+                    if(!key.startsWith('_')) {
+                        memo[key] = fields[key];
+                    }
+                    return memo;
+                }, {}),
+                pk,
+                cpk,
+            },
+        },
+    };
+
+    return {
+        ...state,
+        ...newState,
+        _cpk: cpk,
+    };
 }
 
 function modelDeleteDraft(state, action) {
-    const m = action.model;
-    const type = m.type;
-    let newState = {...state};
-    let models = newState[type] = _.extend({}, state[type] || {});
-    delete models[m.pk];
-    return newState;
+    // TODO: no-op if the draft does not exist
+    // TODO?: delete the model section if it ends up empty?
+    const {
+        type,
+        cpk,
+    } = action.model;
+
+    const models = state[type] || {};
+
+    const newState = {
+        [type]: Object.intKeys(models).reduce((memo, key) => {
+            if (key !== cpk) {
+                memo[key] = models[key];
+            }
+            return memo;
+        }, {}),
+    };
+
+    return {
+        ...state,
+        ...newState,
+    };
 }
 
 function modelDraftUpdateField(state, action) {
+    // TODO: no-op if the draft field isn't changed
     let newState = {};
     const type = action.model;
     let models = newState[type] = _.extend({}, state[type]);
@@ -31,7 +73,6 @@ function modelDraftUpdateField(state, action) {
 }
 
 function modelSaveError(state, action) {
-    debugger;
     const m = action.model;
     const type = m.type;
     let newState = {};

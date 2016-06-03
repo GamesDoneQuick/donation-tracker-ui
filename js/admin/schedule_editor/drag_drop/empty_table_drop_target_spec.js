@@ -1,21 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
-import { DragSource, DragDropContext } from 'react-dnd';
-import DnDBackend from 'react-dnd-test-backend';
+import { DragSource } from 'react-dnd';
+
+import { DnDWrapper } from 'ui/test/context';
 
 import EmptyTableDropTarget from './empty_table_drop_target';
 import sharedStyles from './shared.css';
-
-function wrapInTestContext(DecoratedComponent) {
-  return DragDropContext(DnDBackend)(
-    React.createClass({
-      render: function () {
-        return <DecoratedComponent {...this.props} />;
-      }
-    })
-  );
-}
 
 function makeSource(type, props = {}, endDrag = () => {}) {
     return DragSource(type, { beginDrag: () => props, endDrag: endDrag}, function collect(connect, monitor) {
@@ -28,20 +19,6 @@ function makeSource(type, props = {}, endDrag = () => {}) {
 }
 
 const Original = EmptyTableDropTarget.DecoratedComponent;
-
-const Wrapper = wrapInTestContext(React.createClass({
-    getChildContext: () => ({
-        STATIC_URL: '//localhost/static/',
-    }),
-
-    childContextTypes: {
-        STATIC_URL: React.PropTypes.string,
-    },
-
-    render: function() {
-        return <div>{this.props.children}</div>;
-    }
-}));
 
 describe('EmptyTableDropTarget', () => {
     let subject;
@@ -142,7 +119,7 @@ describe('EmptyTableDropTarget', () => {
             moveSpeedrun,
         };
         const ret = TestUtils.renderIntoDocument(
-            <Wrapper>
+            <DnDWrapper>
                 <Source {...sourceProps} />
                 <EmptyTableDropTarget
                     {...defaultProps}
@@ -150,7 +127,7 @@ describe('EmptyTableDropTarget', () => {
                 >
                     {children}
                 </EmptyTableDropTarget>
-            </Wrapper>
+            </DnDWrapper>
         );
         backend = ret.getManager().getBackend();
         return ret;

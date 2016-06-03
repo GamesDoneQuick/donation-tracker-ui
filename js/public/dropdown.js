@@ -1,25 +1,40 @@
 import React from 'react';
+import cn from 'classnames';
+
+import styles from './dropdown.css';
 
 export default class Dropdown extends React.Component {
     constructor(props) {
         super(props);
         this.toggle = this.toggle.bind(this);
-    }
-
-    getInitialState() {
-        return {
-            open: false,
+        this.state = {
+            open: this.props.initiallyOpen,
         };
     }
 
     render() {
+        const {
+            open,
+        } = this.state;
+
+        const {
+            openClass,
+            closedClass,
+            children,
+        } = this.props;
+
+        const classes = {
+            [openClass]: open,
+            [closedClass]: !open,
+            [styles.default]: true,
+        };
+
         return (
             <span style={{position: 'relative'}}>
-                <img src={STATIC_URL + (this.state.open ? this.props.openFile : this.props.closedFile)}
-                    onClick={this.toggle} />
-            { this.props.open ?
-                (<div onClick={this.toggle}>
-                    { this.props.children }
+                <div data-aid='expander' className={cn(classes)} onClick={this.toggle} />
+            { open ?
+                (<div data-aid='children' onClick={this.toggle}>
+                    { children }
                 </div>)
                 :
                 null
@@ -34,6 +49,7 @@ export default class Dropdown extends React.Component {
 }
 
 Dropdown.defaultProps = {
-    closedFile: 'next.png',
-    openFile: 'dsc.png',
+    initiallyOpen: false,
+    closedClass: styles.closed,
+    openClass: styles.open,
 };

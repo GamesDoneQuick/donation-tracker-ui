@@ -3,17 +3,20 @@ import React from 'react';
 let { PropTypes } = React;
 
 class FormField extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onChange_ = this.onChange_.bind(this);
+    }
 
     render() {
         const { name, value } = this.props;
-        const onChange_ = this.onChange_.bind(this);
         return (
-            <input name={name} value={value} onChange={onChange_} />
+            <input name={name} value={value} onChange={this.onChange_} />
         );
     }
 
     onChange_(e) {
-        this.props.modify(this.props.name, e.target.value);
+        this.props.onChange(this.props.name, e.target.value);
     }
 }
 
@@ -24,7 +27,7 @@ FormField.defaultProps = {
 FormField.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string,
-    modify: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
 };
 
 

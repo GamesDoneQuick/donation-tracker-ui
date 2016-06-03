@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import HTML5Backend from 'react-dnd/modules/backends/HTML5';
-import { DragDropContext } from 'react-dnd/modules';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 import { Link, RouteHandler } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'underscore';
@@ -31,7 +31,6 @@ class App extends Component {
                         </div>
                     </Dropdown>
                 </Spinner>
-                <RouteHandler />
             </div>
         );
     }
