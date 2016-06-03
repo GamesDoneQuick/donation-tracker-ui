@@ -67,14 +67,70 @@ describe('reducers/drafts', () => {
     });
 
     describe('#MODEL_DRAFT_UPDATE_FIELD', () => {
-        it('is untested', () => {
-            expect(true).toBe(false);
+        const action = {
+            type: 'MODEL_DRAFT_UPDATE_FIELD',
+            model: {
+                type: 'updated',
+                cpk: CPK,
+            },
+            field: 'foo',
+            value: 'bar',
+        };
+
+        beforeEach(() => {
+            newState = drafts(state, action);
+        });
+
+        it('updates the draft', () => {
+            expect(newState.updated[CPK].foo).toBe('bar');
+        });
+
+        it('returns a new state', () => {
+            expect(state).not.toBe(newState);
+        });
+
+        it('does not mutate other state', () => {
+            expect(state.other).toBe(newState.other);
+        });
+
+        it('detects no-op', () => {
+            expect(drafts(newState, action)).toBe(newState);
+        });
+
+        it('ignores setting private fields', () => {
+            expect(drafts(state, {
+                type: 'MODEL_DRAFT_UPDATE_FIELD',
+                model: {
+                    type: 'updated',
+                    cpk: CPK,
+                },
+                field: '_foo',
+                value: 'bar',
+            })).toBe(state);
         });
     });
 
-    describe('#MODEL_DRAFT_SAVE_ERROR', () => {
-        it('is untested', () => {
-            expect(true).toBe(false);
+    describe('#MODEL_SAVE_DRAFT_ERROR', () => {
+        const action = {
+            type: 'MODEL_SAVE_DRAFT_ERROR',
+            model: {
+                type: 'updated',
+                cpk: CPK,
+            },
+            error: 'Cannot save this model.',
+            fields: {
+                name: 'Cannot be blank',
+                rent: 'Is too damn high.',
+            },
+        };
+
+        beforeEach(() => {
+            newState = drafts(state, action);
+        });
+
+        it('adds error fields to the draft', () => {
+            expect(newState.updated[CPK]._errors).toEqual(action.errors);
+            expect(newState.updated[CPK]._fields).toEqual(action.fields);
         });
     });
 });

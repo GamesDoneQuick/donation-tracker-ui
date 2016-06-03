@@ -28,7 +28,8 @@ module.exports = function(config) {
         webpackMiddleware: {
             // webpack-dev-middleware configuration
             // i. e.
-            noInfo: true
+            noInfo: true,
+            poll: 1000,
         },
 
         plugins: [

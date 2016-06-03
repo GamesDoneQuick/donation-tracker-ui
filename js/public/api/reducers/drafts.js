@@ -62,23 +62,36 @@ function modelDeleteDraft(state, action) {
 }
 
 function modelDraftUpdateField(state, action) {
-    // TODO: no-op if the draft field isn't changed
-    let newState = {};
-    const type = action.model;
-    let models = newState[type] = _.extend({}, state[type]);
-    let model = _.extend({}, models[action.pk]);
-    model[action.field] = action.value;
-    newState[type][action.pk] = model;
-    return _.extend({}, state, newState);
+    if (((state[action.model.type] || {})[action.model.cpk] || {})[action.field] === action.value) {
+        return state;
+    }
+    if (action.field.startsWith('_')) {
+        return state;
+    }
+    return {
+        ...state,
+        [action.model.type]: {
+            ...state[action.model.type],
+            [action.model.cpk]: {
+                ...state[action.model.cpk],
+                [action.field]: action.value,
+            }
+        }
+    };
 }
 
 function modelSaveError(state, action) {
-    const m = action.model;
-    const type = m.type;
-    let newState = {};
-    let models = newState[m.type] = _.extend({}, state[type] || {});
-    models[m.pk] = _.extend({}, models[m.pk] || {}, { _error: action.error, _fields: action.fields}, _.omit(action.model, ['type']));
-    return _.extend({}, state, newState);
+    return {
+        ...state,
+        [action.model.type]: {
+            ...state[action.model.type],
+            [action.model.cpk]: {
+                ...state[action.model.cpk],
+                _error: action.error,
+                _fields: action.fields,
+            }
+        }
+    };
 }
 
 const modelDraftFunctions = {
