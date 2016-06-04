@@ -28,13 +28,15 @@
     "jquery-ui": "git://github.com/jquery/jquery-ui.git#1.11.4",
     "jquery.cookie": "^1.4.1",
     "react": "^15.0.1",
-    "react-dom": "^15.0.2",
-    "react-redux": "^4.4.5",
     "react-dnd": "^2.0.0",
     "react-dnd-html5-backend": "^2.1.2",
+    "react-dom": "^15.0.2",
+    "react-redux": "^4.4.5",
     "react-router": "^2.0.0",
     "redux": "^3.5.2",
+    "redux-thunk": "^2.1.0",
     "reselect": "^2.0.1",
+    "sprinklr": "^0.2.1",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

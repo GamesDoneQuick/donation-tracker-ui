@@ -31,7 +31,7 @@ export default class Dropdown extends React.Component {
 
         return (
             <span style={{position: 'relative'}}>
-                <div data-aid='expander' className={cn(classes)} onClick={this.toggle} />
+                <span data-aid='expander' className={cn(classes)} onClick={this.toggle} />
             { open ?
                 (<div data-aid='children' onClick={this.toggle}>
                     { children }

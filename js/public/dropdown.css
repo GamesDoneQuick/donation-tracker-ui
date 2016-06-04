@@ -1,5 +1,5 @@
 :local(.closed) {
-    background-image: url(/static/next.png);
+    background-image: url('/static/next.png');
 }
 
 :local(.open) {
@@ -7,6 +7,7 @@
 }
 
 :local(.default) {
+    display: inline-block;
     height: 12px;
     width: 12px;
 }

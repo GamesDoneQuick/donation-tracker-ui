@@ -1,7 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
-var build = require('webpack-build');
-var autoprefixer = require('autoprefixer-core');
+var autoprefixer = require('autoprefixer');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var sharedConfig = require('./shared.webpack');
 

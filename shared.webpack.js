@@ -10,8 +10,7 @@ function keyMirror(obj) {
 }
 
 module.exports = function(opts) {
-    console.log(opts);
-    var config = {
+    return {
         module: {
             loaders: [
                 {
@@ -21,7 +20,11 @@ module.exports = function(opts) {
                 },
                 {
                     test: /\.css$/,
-                    loader: 'style!css-loader?sourceMap!postcss-loader',
+                    loader: 'style!css-loader?root=' + __dirname + '/../tracker&sourceMap!postcss-loader',
+                },
+                {
+                    test: /\.(png|jpg|svg)$/,
+                    loader: 'url-loader'
                 },
                 {
                     test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -42,8 +45,14 @@ module.exports = function(opts) {
             },
         },
         poll: 1000,
-        //externals: keyMirror(packageJSON.dependencies),
+        externals: keyMirror(packageJSON.dependencies),
+        devServer: {
+            proxy: {
+                '*': {
+                    target: 'http://cutler5:8088/',
+                    headers: {'X-Webpack': 1}
+                }
+            }
+        }
     };
-
-    return config;
 };

@@ -21,7 +21,7 @@ class App extends Component {
                                 {events ? events.map((e) => {
                                     return (
                                         <li key={e.pk}>
-                                            <Link to={window.ROOT_PATH + 'schedule_editor/:event'} params={{event: e.pk}}>{e.short}</Link>
+                                            <Link to={window.ROOT_PATH + 'schedule_editor/' + e.pk} params={{event: e.pk}}>{e.short}</Link>
                                         </li>
                                     );
                                 })
@@ -68,4 +68,4 @@ function dispatch(dispatch) {
 App = DragDropContext(HTML5Backend)(connect(select, dispatch)(App, {store: store}));
 App.store = store;
 
-module.exports = App;
+export default App;
