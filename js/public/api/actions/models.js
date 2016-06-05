@@ -1,20 +1,21 @@
 import _ from 'underscore';
+import $ from 'jquery';
 
 function onModelStatusLoad(model) {
     return {
-        type: 'MODEL_STATUS_LOADING', model
+        type: 'MODEL_STATUS', model, status: 'loading',
     };
 }
 
 function onModelStatusSuccess(model) {
     return {
-        type: 'MODEL_STATUS_SUCCESS', model
+        type: 'MODEL_STATUS', model, status: 'success',
     };
 }
 
 function onModelStatusError(model) {
     return {
-        type: 'MODEL_STATUS_ERROR', model
+        type: 'MODEL_STATUS', model, status: 'error',
     };
 }
 
@@ -41,28 +42,23 @@ const modelTypeMap = {
     speedrun: 'run'
 };
 
-function loadModels(model, params, additive) {
+function loadModels(model, params = {}) {
     return (dispatch) => {
         dispatch(onModelStatusLoad(model));
-        $.get(`${API_ROOT}search`, _.extend({type: modelTypeMap[model] || model}, params || {})).
+        $.get(`${API_ROOT}search`, {...params, type: modelTypeMap[model] || model}).
             done((models) => {
                 dispatch(onModelStatusSuccess(model));
-                const func = additive ? onModelCollectionAdd : onModelCollectionReplace;
-                dispatch(func(model,
+                dispatch(onModelCollectionAdd(model,
                     models.reduce((o, v) => {
                         if (v.model.toLowerCase() === `tracker.${model}`.toLowerCase()) {
-                            v.fields.pk = v.pk;
-                            o.push(v.fields);
+                            o[v.pk] = v.fields;
                         }
                         return o;
-                    }, [])
+                    }, {})
                 ));
             }).
             fail((data) => {
                 dispatch(onModelStatusError(model));
-                if (!additive) {
-                    dispatch(onModelCollectionReplace(model, []));
-                }
             });
     }
 }

@@ -1,14 +1,15 @@
-import { compose, combineReducers, createStore, applyMiddleware } from 'redux';
-import { devTools, persistState } from 'redux-devtools';
-import thunk from 'redux-thunk';
 import _ from 'underscore';
+import { compose, combineReducers, createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { routerReducer } from 'react-router-redux';
+import { devTools, persistState } from 'redux-devtools';
 
 import DevTools from 'ui/devtools';
 import actions from './actions';
 import reducers from './reducers';
 import freeze from 'ui/public/util/freeze';
 
-const combined = combineReducers(reducers);
+const combined = combineReducers({...reducers, routing: routerReducer});
 
 function freezeReducer(state = {}, action) {
     const newState = combined(state, action);

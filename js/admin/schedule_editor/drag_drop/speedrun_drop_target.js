@@ -2,11 +2,16 @@ import React from 'react';
 const { PropTypes } = React;
 import { DropTarget } from 'react-dnd';
 import cn from 'classnames';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import sharedStyles from './shared.css';
 import styles from './speedrun_drop_target.css';
 
 class SpeedrunDropTarget extends React.Component {
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.isOver && nextProps.canDrop) !== (this.props.isOver && this.props.canDrop);
+    }
+
     render() {
         const { before, isOver, canDrop, connectDropTarget } = this.props;
         const { STATIC_URL } = this.context;
@@ -19,7 +24,7 @@ class SpeedrunDropTarget extends React.Component {
         ];
         return connectDropTarget(
             <span className={cn(classes)}>
-                <img src={this.context.STATIC_URL + (before ? 'prev.png' : 'next.png')} />
+                <img src={STATIC_URL + (before ? 'prev.png' : 'next.png')} />
             </span>
         );
     }

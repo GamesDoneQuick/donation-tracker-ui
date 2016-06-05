@@ -1,41 +1,52 @@
 import _ from 'underscore';
 
-function stateModels(state, type, models) {
+function modelCollectionReplace(state, action) {
     return {
         ...state,
-        [type]: models,
+        [action.model]: {...action.models},
     };
 }
 
-function modelCollectionReplace(state, action) {
-    return stateModels(state, action.model, [...action.models]);
-}
-
 function modelCollectionAdd(state, action) {
-    return stateModels(
-        state,
-        action.model,
-        _.values(_.extend(_.indexBy((state[action.model] || []).slice(), 'pk'), _.indexBy(action.models, 'pk')))
-    );
+    return {
+        ...state,
+        [action.model]: {...state[action.model], ...action.models},
+    };
 }
 
 function modelCollectionRemove(state, action) {
-    let models = state[action.model] ? state[action.model].models.slice() : [];
-    let pks = _.pluck(action.models, 'pk');
-    models = _.reject(models, (m) => {
-        return _indexOf(pks, m.pk) !== -1;
+    const newModels = {...state[action.model]};
+    let removed = false;
+    action.pks.forEach(pk => {
+        removed = removed || !!newModels[pk];
+        delete newModels[pk];
     });
-    return stateModels(state, action.model,  models);
+    return removed ? {
+        ...state,
+        [action.model]: newModels,
+    } : state;
 }
 
 function modelSetInternalField(state, action) {
-    const models = (state[action.model] || []).slice();
-    const model = _.findWhere(models, {pk: action.pk});
-    if (!model) {
+    if (state[action.model] &&
+        state[action.model][action.pk] &&
+        state[action.model][action.pk]._internal &&
+        state[action.model][action.pk]._internal[action.field] === action.value) {
         return state;
     }
-    const _internal = model._internal || {};
-    return stateModels(state, action.model, [..._.reject(models, (m) => m.pk === action.pk), {...model, _internal: {..._internal, [action.field]: action.value}}]);
+    return {
+        ...state,
+        [action.model]: {
+            ...state[action.model],
+            [action.pk]: {
+                ...state[action.model][action.pk],
+                _internal: {
+                    ...state[action.model][action.pk]._internal,
+                    [action.field]: action.value,
+                }
+            }
+        }
+    };
 }
 
 let modelCollectionFunctions = {

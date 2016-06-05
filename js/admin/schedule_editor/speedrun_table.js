@@ -42,6 +42,21 @@ class Header extends React.Component {
     }
 }
 
+function sortByStartTime(models) {
+    return Object.keys(models).sort(
+        function (a, b) {
+            a = new Date(models[a].starttime);
+            b = new Date(models[b].starttime);
+            if (a < b) {
+                return -1;
+            } else if (a > b) {
+                return 1;
+            }
+            return 0;
+        }
+    );
+}
+
 class SpeedrunTable extends React.Component {
     constructor(props) {
         super(props);
@@ -59,7 +74,7 @@ class SpeedrunTable extends React.Component {
             editModel,
             updateField,
         } = this.props;
-        const speedruns = [...this.props.speedruns || []].sort(orderSort);
+        const speedruns = event ? sortByStartTime(event.speedruns).map(pk => ({...event.speedruns[pk], pk: parseInt(pk, 10)})) : [];
         return (
             <table className="table table-striped table-condensed small">
                 <Header title={event ? event.name : 'All Events'} />

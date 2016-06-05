@@ -2,6 +2,7 @@ import React from 'react';
 const { PropTypes } = React;
 import { DragSource } from 'react-dnd';
 import _ from 'underscore';
+import moment from 'moment';
 
 import Spinner from '../../public/spinner';
 import OrderTarget from '../../public/order_target';
@@ -10,7 +11,6 @@ import ErrorList from '../../public/error_list';
 
 import SpeedrunDropTarget from './drag_drop/speedrun_drop_target';
 
-const dateFormat = dateFormat || (() => 'what');
 const STATIC_URL = STATIC_URL || '//localhost/';
 
 class Speedrun extends React.Component {
@@ -149,7 +149,7 @@ class Speedrun extends React.Component {
         return (
             <tr style={{opacity: isDragging ? 0.5 : 1}}>
                 <td className='small'>
-                    {(speedrun && speedrun.order !== null && speedrun.starttime !== null) ? dateFormat(Date.parse(speedrun.starttime)) : 'Unscheduled' }
+                    {(speedrun && speedrun.order !== null && speedrun.starttime !== null) ? moment(speedrun.starttime).format("dddd, MMMM Do, h:mm a") : 'Unscheduled' }
                 </td>
                 <td style={{textAlign: 'center'}}>
                     <Spinner

@@ -1,11 +1,15 @@
 :local(.default) {
     width: 50%;
+    height: 100%;
+    display: inline-block;
 }
 
 :local(.before) {
+    background-image: url(/static/prev.png) center center no-repeat;
     float: left;
 }
 
 :local(.after) {
+    background-image: url(/static/next.png) center center no-repeat;
     float: right;
 }

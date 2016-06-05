@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, browserHistory } from 'react-router';
 import $ from 'jquery';
+import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 import { Provider } from 'react-redux';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 import App from './app';
 import ScheduleEditor from './schedule_editor';
@@ -13,14 +14,16 @@ if (__DEVTOOLS__) {
     window.store = App.store;
 }
 
+const history = syncHistoryWithStore(browserHistory, store);
+
 $(window).load(() => {
     ajaxSetup($);
 
     ReactDOM.render(
         <Provider store={App.store}>
             <span>
-                <Router history={browserHistory} location={{href: window.ROOT_PATH}}>
-                    <Route component={App} path={window.ROOT_PATH}>
+                <Router history={history}>
+                    <Route path={window.ROOT_PATH} component={App}>
                         <Route path="schedule_editor" component={ScheduleEditor}>
                             <Route path=":event" component={ScheduleEditor}/>
                         </Route>

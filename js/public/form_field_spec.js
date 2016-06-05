@@ -15,7 +15,7 @@ describe('FormField', () => {
 
     it('renders an input with the provided name and value', () => {
         expect(ReactDOM.findDOMNode(subject).attributes.name.value).toBe('great');
-        expect(ReactDOM.findDOMNode(subject).attributes.value.value).toBe('good');
+        expect(ReactDOM.findDOMNode(subject).value).toBe('good');
     });
 
     it('calls the onChange callback', () => {

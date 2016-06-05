@@ -1,6 +1,4 @@
-import jQuery from 'jquery';
-
-const $ = window.$ || jQuery;
+import $ from 'jquery';
 
 function onLoadMe(me) {
     return {
@@ -13,29 +11,23 @@ export function fetchMe() {
     return (dispatch) => {
         dispatch({
             type: 'MODEL_STATUS',
-            model: {
-                type: 'me',
-                status: 'loading',
-            }
+            model: 'me',
+            status: 'loading',
         });
         $.get(`${API_ROOT}me`)
             .done((me) => {
                 dispatch({
                     type: 'MODEL_STATUS',
-                    model: {
-                        type: 'me',
-                        status: 'success',
-                    }
+                    model: 'me',
+                    status: 'success',
                 });
                 dispatch(onLoadMe(me));
             })
             .fail((data) => {
                 dispatch({
                     type: 'MODEL_STATUS',
-                    model: {
-                        type: 'me',
-                        status: 'error',
-                    }
+                    model: 'me',
+                    status: 'error',
                 });
                 dispatch(onLoadMe({})); // anonymous user
             });

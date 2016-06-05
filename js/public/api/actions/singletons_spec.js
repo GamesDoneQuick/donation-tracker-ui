@@ -28,7 +28,7 @@ describe('singletons actions', () => {
             });
 
             it('dispatches a loading action for "me"', () => {
-                expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'MODEL_STATUS', model: { type: 'me', status: 'loading'}}));
+                expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'MODEL_STATUS', model: 'me', status: 'loading'}));
             });
 
             it('sends a request to the ME endpoint', () => {
@@ -41,7 +41,7 @@ describe('singletons actions', () => {
                 });
 
                 it('dispatches a load complete action for "me"', () => {
-                    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'MODEL_STATUS', model: { type: 'me', status: 'success'}}));
+                    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'MODEL_STATUS', model: 'me', status: 'success'}));
                 });
 
                 it('dispatches a LOAD_ME action with the returned user', () => {
@@ -55,7 +55,7 @@ describe('singletons actions', () => {
                 });
 
                 it('dispatches a load error action for "me"', () => {
-                    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'MODEL_STATUS', model: { type: 'me', status: 'error'}}));
+                    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining({type: 'MODEL_STATUS', model: 'me', status: 'error'}));
                 });
 
                 it('dispatches a LOAD_ME action with an anonymous user', () => {

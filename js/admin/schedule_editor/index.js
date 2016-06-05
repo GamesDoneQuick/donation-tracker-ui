@@ -25,7 +25,7 @@ class ScheduleEditor extends React.Component {
     }
 
     render() {
-        const { event, speedruns, drafts, status, moveSpeedrun, } = this.props;
+        const { event, drafts, status, moveSpeedrun, } = this.props;
         const { saveField, saveModel_, editModel_, cancelEdit_, newSpeedrun_, updateField_, } = this;
         const loading = status.speedrun === 'loading' || status.event === 'loading';
         return (
@@ -34,7 +34,6 @@ class ScheduleEditor extends React.Component {
                     <SpeedrunTable
                         event={event}
                         drafts={drafts}
-                        speedruns={speedruns}
                         saveModel={saveModel_}
                         editModel={editModel_}
                         cancelEdit={cancelEdit_}
@@ -75,7 +74,7 @@ class ScheduleEditor extends React.Component {
     }
 
     editModel_(model) {
-        this.props.newDraftModel({type: 'speedrun', ...model});
+        this.props.newDraftModel({type: 'speedrun', pk: model.pk, fields: model});
     }
 
     cancelEdit_(model) {
@@ -91,17 +90,42 @@ class ScheduleEditor extends React.Component {
     }
 }
 
+import { fromJS, Map } from 'immutable';
+
+function stringToNumeric(obj) {
+    return obj.withMutations(obj => {
+        obj.forEach((v, k) => {
+            if (parseInt(k, 10)) {
+                obj.delete(k);
+                k = parseInt(k, 10);
+            }
+            if (Immutable.Map.isMap(v)) {
+                v = stringToNumeric(v);
+            }
+            obj.set(k, v);
+        });
+    });
+}
+
+function flatToImmutable(obj, numericIds = true) {
+    const result = Immutable.fromJS(obj);
+    return numericIds ? stringToNumeric(result) : result;
+}
+
 const eventSelector = createSelector(
     [
-        state => state,
+        state => flatToImmutable(state),
         createSelector(
-            (_, event_id) => event_id,
-            event_id => Sprinklr.models.createModelSelectorCreator('event', [], [], [], ['name'])(12)
+            (_, event_id) => parseInt(event_id, 10),
+            event_id => Sprinklr.models.createModelSelectorCreator('event',
+                [],
+                [],
+                [{field: 'speedruns', model: 'speedrun', field_id: 'event'}],
+                ['name'])(event_id)
         )
     ],
     (state, eventSelector) => {
-        const event = eventSelector(Immutable.fromJS(state));
-        console.log(state.event[12]);
+        const event = eventSelector(state);
         return event && event.toJS();
     }
 );
@@ -109,11 +133,9 @@ const eventSelector = createSelector(
 
 function select(state, ownProps) {
     const { models, drafts, status } = state;
-    const { speedrun } = models;
-    const event = eventSelector(state.models, ownProps.params.event);
+    const event = models.event ? eventSelector(models, ownProps.params.event) : null;
     return {
         event: event,
-        speedruns: speedrun,
         status,
         drafts: drafts.speedrun || {},
     };

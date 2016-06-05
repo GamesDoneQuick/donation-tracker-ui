@@ -7,10 +7,19 @@ import _ from 'underscore';
 import Spinner from '../public/spinner';
 import Dropdown from '../public/dropdown';
 import { actions, store } from '../public/api';
+import { sortByDateField } from '../public/util';
 
 class App extends Component {
+    getChildContext() {
+        return { STATIC_URL: window.STATIC_URL };
+    }
+
     render() {
-        const { events, status, dropdowns, toggleDropdown } = this.props;
+        const {
+            events,
+            status,
+            children,
+        } = this.props;
         return (
             <div style={{position: 'relative'}}>
                 <Link to={window.ROOT_PATH + "schedule_editor"}>Schedule Editor</Link>
@@ -18,10 +27,10 @@ class App extends Component {
                     <Dropdown>
                         <div style={{border: '1px solid', position: 'absolute', backgroundColor: 'white', minWidth: '200px', maxHeight: '120px', overflowY: 'auto' }}>
                             <ul style={{display: 'block'}}>
-                                {events ? events.map((e) => {
+                                {events ? sortByDateField(events).map((pk, event) => {
                                     return (
-                                        <li key={e.pk}>
-                                            <Link to={window.ROOT_PATH + 'schedule_editor/' + e.pk} params={{event: e.pk}}>{e.short}</Link>
+                                        <li key={pk}>
+                                            <Link to={window.ROOT_PATH + 'schedule_editor/' + pk}>{event.short}</Link>
                                         </li>
                                     );
                                 })
@@ -31,6 +40,7 @@ class App extends Component {
                         </div>
                     </Dropdown>
                 </Spinner>
+                {children}
             </div>
         );
     }
@@ -39,6 +49,10 @@ class App extends Component {
         this.props.loadModels('event');
     }
 }
+
+App.childContextTypes = {
+    STATIC_URL: React.PropTypes.string,
+};
 
 function select(state) {
     const { saving, status, dropdowns } = state;
@@ -65,7 +79,7 @@ function dispatch(dispatch) {
     };
 }
 
-App = DragDropContext(HTML5Backend)(connect(select, dispatch)(App, {store: store}));
+App = DragDropContext(HTML5Backend)(connect(select, dispatch)(App));
 App.store = store;
 
 export default App;
