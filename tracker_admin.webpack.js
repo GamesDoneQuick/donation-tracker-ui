@@ -12,7 +12,7 @@ module.exports = {
         'filename': 'admin.js',
         'pathinfo': true,
         'path': __dirname + '/static/gen',
-        'publicPath': '/assets',
+        'publicPath': '/webpack',
     },
     module: sharedConfig.module,
     plugins: [

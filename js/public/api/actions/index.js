@@ -1,7 +1,9 @@
 import models from './models';
 import dropdowns from './dropdowns';
+import singletons from './singletons';
 
-module.exports = {
+export default {
     models,
-    dropdowns
+    dropdowns,
+    singletons,
 };

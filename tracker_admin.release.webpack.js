@@ -12,7 +12,7 @@ module.exports = {
         'filename': 'admin-[name]-[hash].js',
         'pathinfo': true,
         'path': __dirname + '/static/gen',
-        'publicPath': __dirname + '/static/gen',
+        'publicPath': '/static/gen',
     },
     module: sharedConfig.module,
     postcss: [autoprefixer],
