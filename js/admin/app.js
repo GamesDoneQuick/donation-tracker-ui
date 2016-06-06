@@ -27,7 +27,7 @@ class App extends Component {
                     <Dropdown>
                         <div style={{border: '1px solid', position: 'absolute', backgroundColor: 'white', minWidth: '200px', maxHeight: '120px', overflowY: 'auto' }}>
                             <ul style={{display: 'block'}}>
-                                {events ? sortByDateField(events).map((pk, event) => {
+                                {events ? sortByDateField(events).map(([pk, event]) => {
                                     return (
                                         <li key={pk}>
                                             <Link to={window.ROOT_PATH + 'schedule_editor/' + pk}>{event.short}</Link>
@@ -46,7 +46,17 @@ class App extends Component {
     }
 
     componentWillMount() {
-        this.props.loadModels('event');
+        const {
+            loadModels,
+            status,
+        } = this.props;
+        setTimeout(
+            () => {
+                if (status.event !== 'success' && status.event !== 'loading') {
+                    loadModels('event');
+                }
+            },
+            1);
     }
 }
 
@@ -72,9 +82,6 @@ function dispatch(dispatch) {
         },
         saveModels: (models) => {
             dispatch(actions.models.saveModels(models));
-        },
-        toggleDropdown: (dropdown) => {
-            dispatch(actions.dropdowns.toggleDropdown(dropdown));
         },
     };
 }

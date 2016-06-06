@@ -37,6 +37,12 @@ function onModelCollectionRemove(model, models) {
     };
 }
 
+export function modelStatus(model, status) {
+    return {
+        type: 'MODEL_STATUS', model, status,
+    };
+}
+
 // TODO: Better solution than this
 const modelTypeMap = {
     speedrun: 'run'
@@ -44,10 +50,9 @@ const modelTypeMap = {
 
 function loadModels(model, params = {}) {
     return (dispatch) => {
-        dispatch(onModelStatusLoad(model));
+        dispatch(modelStatus(model, 'loading'));
         $.get(`${API_ROOT}search`, {...params, type: modelTypeMap[model] || model}).
             done((models) => {
-                dispatch(onModelStatusSuccess(model));
                 dispatch(onModelCollectionAdd(model,
                     models.reduce((o, v) => {
                         if (v.model.toLowerCase() === `tracker.${model}`.toLowerCase()) {
@@ -56,9 +61,10 @@ function loadModels(model, params = {}) {
                         return o;
                     }, {})
                 ));
+                dispatch(modelStatus(model, 'success'));
             }).
             fail((data) => {
-                dispatch(onModelStatusError(model));
+                dispatch(modelStatus(model, 'error'));
             });
     }
 }
@@ -218,6 +224,7 @@ function command(command) {
 }
 
 export default {
+    modelStatus,
     loadModels,
     newDraftModel,
     deleteDraftModel,

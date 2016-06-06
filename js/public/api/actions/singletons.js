@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { modelStatus } from './models';
 
 function onLoadMe(me) {
     return {
@@ -9,26 +10,14 @@ function onLoadMe(me) {
 
 export function fetchMe() {
     return (dispatch) => {
-        dispatch({
-            type: 'MODEL_STATUS',
-            model: 'me',
-            status: 'loading',
-        });
+        dispatch(modelStatus('me', 'loading'));
         $.get(`${API_ROOT}me`)
             .done((me) => {
-                dispatch({
-                    type: 'MODEL_STATUS',
-                    model: 'me',
-                    status: 'success',
-                });
+                dispatch(modelStatus('me', 'success'));
                 dispatch(onLoadMe(me));
             })
             .fail((data) => {
-                dispatch({
-                    type: 'MODEL_STATUS',
-                    model: 'me',
-                    status: 'error',
-                });
+                dispatch(modelStatus('me', 'error'));
                 dispatch(onLoadMe({})); // anonymous user
             });
     };

@@ -133,7 +133,7 @@ const eventSelector = createSelector(
 
 function select(state, ownProps) {
     const { models, drafts, status } = state;
-    const event = models.event ? eventSelector(models, ownProps.params.event) : null;
+    const event = (models.event && models.speedrun) ? eventSelector(models, ownProps.params.event) : null;
     return {
         event: event,
         status,

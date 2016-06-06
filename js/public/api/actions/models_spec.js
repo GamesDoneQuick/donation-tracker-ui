@@ -62,4 +62,46 @@ describe('models actions', () => {
             });
         });
     });
+
+    describe('#newDraftModel', () => {
+       it('is untested', () => {
+           expect(true).toBe(false);
+       });
+    });
+
+    describe('#deleteDraftModel', () => {
+       it('is untested', () => {
+           expect(true).toBe(false);
+       });
+    });
+
+    describe('#updateDraftModelField', () => {
+       it('is untested', () => {
+           expect(true).toBe(false);
+       });
+    });
+
+    describe('#setInternalModelField', () => {
+       it('is untested', () => {
+           expect(true).toBe(false);
+       });
+    });
+
+    describe('#saveDraftModels', () => {
+       it('is untested', () => {
+           expect(true).toBe(false);
+       });
+    });
+
+    describe('#saveField', () => {
+       it('is untested', () => {
+           expect(true).toBe(false);
+       });
+    });
+
+    describe('#command', () => {
+       it('is untested', () => {
+           expect(true).toBe(false);
+       });
+    });
 });
