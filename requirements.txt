@@ -1,5 +1,0 @@
-Django==1.9.13
-optional-django==0.3.0
-rsa==3.2
-six==1.9.0
-webpack-manifest==1.0.0
